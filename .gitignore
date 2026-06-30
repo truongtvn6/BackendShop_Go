@@ -41,4 +41,4 @@ static/uploads/*
 .cursor
 # Docker Compose config
 
-
+.agents
