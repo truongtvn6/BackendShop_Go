@@ -29,6 +29,26 @@ func NewProductHandler(db *gorm.DB) *ProductHandler {
 
 // --- GetProducts và GetProduct giữ nguyên như file bạn đã cung cấp ---
 // GetProducts lấy danh sách sản phẩm (Public)
+// GetProducts godoc
+// @Summary      Lấy danh sách sản phẩm
+// @Description  Lấy danh sách sản phẩm với phân trang, tìm kiếm và bộ lọc
+// @Tags         Products
+// @Produce      json
+// @Param        page       query int     false "Trang hiện tại" default(1)
+// @Param        limit      query int     false "Số sản phẩm mỗi trang" default(10) maximum(100)
+// @Param        search     query string  false "Từ khóa tìm kiếm"
+// @Param        category   query string  false "Danh mục sản phẩm"
+// @Param        min_price  query number  false "Giá tối thiểu"
+// @Param        max_price  query number  false "Giá tối đa"
+// @Param        in_stock   query boolean false "Chỉ hiển thị hàng còn"
+// @Param        sort_by    query string  false "Sắp xếp theo" Enums(price, name, created_at, stock, category)
+// @Param        order      query string  false "Thứ tự" Enums(asc, desc)
+// @Param        start_date query string  false "Ngày bắt đầu (YYYY-MM-DD)"
+// @Param        end_date   query string  false "Ngày kết thúc (YYYY-MM-DD)"
+// @Success      200 {object} utils.PaginatedResponse{data=[]models.ProductResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Router       /products [get]
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	var query models.ProductQueryParams
 	if err := c.ShouldBindQuery(&query); err != nil {
@@ -120,6 +140,17 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 }
 
 // GetProduct lấy chi tiết sản phẩm (Public)
+// GetProduct godoc
+// @Summary      Chi tiết sản phẩm
+// @Description  Lấy thông tin chi tiết một sản phẩm theo ID
+// @Tags         Products
+// @Produce      json
+// @Param        id   path      int  true  "Product ID"
+// @Success      200 {object} utils.Response{data=models.ProductResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      404 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Router       /products/{id} [get]
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -143,6 +174,20 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 }
 
 // CreateProduct tạo sản phẩm mới (Private - Admin only)
+// CreateProduct godoc
+// @Summary      Tạo sản phẩm
+// @Description  Tạo sản phẩm mới (chỉ admin)
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        request body models.CreateProductRequest true "Thông tin sản phẩm"
+// @Success      201 {object} utils.Response{data=models.ProductResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      403 {object} utils.Response
+// @Failure      409 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	role := c.GetString("role")
 	if role != "admin" {
@@ -201,6 +246,22 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 // UpdateProduct cập nhật sản phẩm (Private - Admin only)
+// UpdateProduct godoc
+// @Summary      Cập nhật sản phẩm
+// @Description  Cập nhật thông tin sản phẩm (chỉ admin)
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        id      path     int                           true "Product ID"
+// @Param        request body     models.UpdateProductRequest   true "Thông tin sản phẩm"
+// @Success      200 {object} utils.Response{data=models.ProductResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      403 {object} utils.Response
+// @Failure      404 {object} utils.Response
+// @Failure      409 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /products/{id} [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	role := c.GetString("role")
 	if role != "admin" {
@@ -290,6 +351,18 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 
 // --- DeleteProduct và UploadProductImage giữ nguyên như file bạn đã cung cấp ---
 // DeleteProduct xóa sản phẩm (Private - Admin only)
+// DeleteProduct godoc
+// @Summary      Xóa sản phẩm
+// @Description  Xóa sản phẩm theo ID (chỉ admin)
+// @Tags         Products
+// @Produce      json
+// @Param        id   path      int  true  "Product ID"
+// @Success      200 {object} utils.Response
+// @Failure      400 {object} utils.Response
+// @Failure      403 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /products/{id} [delete]
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	role := c.GetString("role")
 	if role != "admin" {
@@ -309,6 +382,21 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 }
 
 // UploadProductImage xử lý upload ảnh cho sản phẩm
+// UploadProductImage godoc
+// @Summary      Upload ảnh sản phẩm
+// @Description  Upload ảnh cho sản phẩm (chỉ JPG, PNG, GIF)
+// @Tags         Products
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        id    path     int    true  "Product ID"
+// @Param        image formData file   true  "File ảnh sản phẩm"
+// @Success      200 {object} utils.Response
+// @Failure      400 {object} utils.Response
+// @Failure      403 {object} utils.Response
+// @Failure      404 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /products/{id}/upload [post]
 func (h *ProductHandler) UploadProductImage(c *gin.Context) {
 	role := c.GetString("role")
 	if role != "admin" {

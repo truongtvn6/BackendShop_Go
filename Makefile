@@ -17,6 +17,13 @@ help:
 	@echo "  make dev-down  - Stop development environment"
 	@echo "  make prod-up   - Start production environment"
 	@echo "  make prod-down - Stop production environment"
+	@echo "  make swagger   - Generate Swagger documentation"
+
+# Generate swagger docs
+swagger:
+	@echo "📝 Generating Swagger documentation..."
+	swag init -g cmd/api/main.go -o docs
+	@echo "✅ Swagger docs generated!"
 
 # Build Docker images
 build:

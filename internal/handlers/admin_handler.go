@@ -21,6 +21,20 @@ func NewAdminHandler(db *gorm.DB) *AdminHandler {
 }
 
 // GetUsersList lấy danh sách tất cả người dùng (Admin only)
+// GetUsersList godoc
+// @Summary      Lấy danh sách người dùng
+// @Description  Lấy danh sách tất cả người dùng (chỉ admin)
+// @Tags         Admin
+// @Produce      json
+// @Param        page   query int    false "Trang hiện tại" default(1)
+// @Param        limit  query int    false "Số user mỗi trang" default(10) maximum(100)
+// @Param        search query string false "Tìm kiếm theo username/email"
+// @Param        role   query string false "Lọc theo role" Enums(admin, user)
+// @Success      200 {object} utils.PaginatedResponse{data=[]models.UserResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      403 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /admin/users [get]
 func (h *AdminHandler) GetUsersList(c *gin.Context) {
 	// Kiểm tra quyền admin
 	role := c.GetString("role")

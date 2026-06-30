@@ -8,6 +8,8 @@ import (
 	"github.com/NgTruong624/project_backend/internal/handlers"
 	"github.com/NgTruong624/project_backend/internal/middleware"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // adminMiddleware kiểm tra quyền admin
@@ -52,6 +54,9 @@ func SetupRouter(
 		}
 		c.Next()
 	})
+
+	// Swagger route
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// API v1 group
 	api := router.Group("/api/v1")

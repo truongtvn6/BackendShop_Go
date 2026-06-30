@@ -27,6 +27,17 @@ func NewAuthHandler(db *gorm.DB, jwtSecret string) *AuthHandler {
 }
 
 // Register xử lý đăng ký user mới
+// Register godoc
+// @Summary      Đăng ký tài khoản
+// @Description  Tạo tài khoản mới với username, email và password
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.RegisterRequest true "Thông tin đăng ký"
+// @Success      201 {object} utils.Response{data=models.UserResponse}
+// @Failure      400 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Router       /auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -78,6 +89,18 @@ func (h *AuthHandler) Register(c *gin.Context) {
 }
 
 // Login xử lý đăng nhập
+// Login godoc
+// @Summary      Đăng nhập
+// @Description  Đăng nhập bằng username và password, trả về JWT token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.LoginRequest true "Thông tin đăng nhập"
+// @Success      200 {object} utils.Response
+// @Failure      400 {object} utils.Response
+// @Failure      401 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Router       /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -126,6 +149,20 @@ func (h *AuthHandler) Login(c *gin.Context) {
 }
 
 // ChangePassword handles the password change request
+// ChangePassword godoc
+// @Summary      Đổi mật khẩu
+// @Description  Đổi mật khẩu người dùng hiện tại
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param        request body models.ChangePasswordRequest true "Thông tin đổi mật khẩu"
+// @Success      200 {object} utils.Response
+// @Failure      400 {object} utils.Response
+// @Failure      401 {object} utils.Response
+// @Failure      404 {object} utils.Response
+// @Failure      500 {object} utils.Response
+// @Security     BearerAuth
+// @Router       /users/change-password [put]
 func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	var req models.ChangePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

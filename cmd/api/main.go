@@ -11,11 +11,24 @@ import (
 	"github.com/NgTruong624/project_backend/internal/models"
 	"github.com/NgTruong624/project_backend/internal/routes"
 	"github.com/joho/godotenv"
+
+	_ "github.com/NgTruong624/project_backend/docs"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+// @title           Backend Shop API
+// @version         1.0
+// @description     REST API backend cho ứng dụng shop bán hàng. Hỗ trợ quản lý sản phẩm, xác thực người dùng và quản trị hệ thống.
+
+// @host            localhost:8080
+// @BasePath        /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Nhập token theo format: Bearer {access_token}
 func main() {
 	// Load .env file - không crash nếu không tìm thấy
 	if err := godotenv.Load(); err != nil {
