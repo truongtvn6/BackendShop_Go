@@ -9,6 +9,7 @@ import (
 	"github.com/NgTruong624/project_backend/internal/handlers"
 	"github.com/NgTruong624/project_backend/internal/middleware"
 	"github.com/NgTruong624/project_backend/internal/models"
+	"github.com/NgTruong624/project_backend/internal/repository"
 	"github.com/NgTruong624/project_backend/internal/routes"
 	"github.com/joho/godotenv"
 
@@ -73,9 +74,12 @@ func main() {
 		log.Fatal("JWT_SECRET environment variable is required")
 	}
 
-	authHandler := handlers.NewAuthHandler(db, jwtSecret)
-	productHandler := handlers.NewProductHandler(db)
-	adminHandler := handlers.NewAdminHandler(db)
+	userRepo := repository.NewUserRepository(db)
+	productRepo := repository.NewProductRepository(db)
+
+	authHandler := handlers.NewAuthHandler(userRepo, jwtSecret)
+	productHandler := handlers.NewProductHandler(productRepo)
+	adminHandler := handlers.NewAdminHandler(userRepo)
 	jwtMiddleware := middleware.NewJWTMiddleware(jwtSecret)
 
 	// Setup router với tất cả routes
