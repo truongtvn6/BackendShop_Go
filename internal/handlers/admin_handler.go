@@ -7,16 +7,15 @@ import (
 	"github.com/NgTruong624/project_backend/internal/repository"
 	"github.com/NgTruong624/project_backend/internal/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type AdminHandler struct {
 	userRepo *repository.UserRepository
 }
 
-func NewAdminHandler(db *gorm.DB) *AdminHandler {
+func NewAdminHandler(userRepo *repository.UserRepository) *AdminHandler {
 	return &AdminHandler{
-		userRepo: repository.NewUserRepository(db),
+		userRepo: userRepo,
 	}
 }
 

@@ -21,9 +21,9 @@ type ProductHandler struct {
 	repo *repository.ProductRepository
 }
 
-func NewProductHandler(db *gorm.DB) *ProductHandler {
+func NewProductHandler(repo *repository.ProductRepository) *ProductHandler {
 	return &ProductHandler{
-		repo: repository.NewProductRepository(db),
+		repo: repo,
 	}
 }
 

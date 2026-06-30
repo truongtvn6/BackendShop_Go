@@ -6,22 +6,22 @@ import (
 	"time"
 
 	"github.com/NgTruong624/project_backend/internal/models"
+	"github.com/NgTruong624/project_backend/internal/repository"
 	"github.com/NgTruong624/project_backend/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type AuthHandler struct {
-	db        *gorm.DB
+	userRepo  *repository.UserRepository
 	jwtSecret string
 }
 
-func NewAuthHandler(db *gorm.DB, jwtSecret string) *AuthHandler {
+func NewAuthHandler(userRepo *repository.UserRepository, jwtSecret string) *AuthHandler {
 	return &AuthHandler{
-		db:        db,
+		userRepo:  userRepo,
 		jwtSecret: jwtSecret,
 	}
 }
@@ -46,8 +46,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	// Kiểm tra email đã tồn tại
-	var existingUser models.User
-	if err := h.db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+	if _, err := h.userRepo.GetByEmail(req.Email); err == nil {
 		c.JSON(http.StatusBadRequest, utils.NewErrorResponse(http.StatusBadRequest, "Email already exists", ""))
 		return
 	}
@@ -70,7 +69,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		UpdatedAt: time.Now(),
 	}
 
-	if err := h.db.Create(&user).Error; err != nil {
+	if err := h.userRepo.Create(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, utils.NewErrorResponse(http.StatusInternalServerError, "Error creating user", err.Error()))
 		return
 	}
@@ -109,8 +108,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	// Tìm user theo username
-	var user models.User
-	if err := h.db.Where("username = ?", req.Username).First(&user).Error; err != nil {
+	user, err := h.userRepo.GetByUsername(req.Username)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, utils.NewErrorResponse(http.StatusUnauthorized, "Invalid username or password", ""))
 		return
 	}
@@ -208,8 +207,8 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	}
 
 	// Get user from database
-	var user models.User
-	if err := h.db.First(&user, userID).Error; err != nil {
+	user, err := h.userRepo.GetByID(userID.(uint))
+	if err != nil {
 		c.JSON(http.StatusNotFound, utils.NewErrorResponse(http.StatusNotFound, "User not found", ""))
 		return
 	}
@@ -228,7 +227,8 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	}
 
 	// Update password in database
-	if err := h.db.Model(&user).Update("password", string(hashedPassword)).Error; err != nil {
+	user.Password = string(hashedPassword)
+	if err := h.userRepo.Update(user); err != nil {
 		c.JSON(http.StatusInternalServerError, utils.NewErrorResponse(http.StatusInternalServerError, "Failed to update password", err.Error()))
 		return
 	}

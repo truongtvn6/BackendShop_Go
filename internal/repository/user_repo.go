@@ -81,3 +81,14 @@ func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+// Create tạo người dùng mới
+func (r *UserRepository) Create(user *models.User) error {
+	return r.db.Create(user).Error
+}
+
+// Update cập nhật thông tin người dùng
+func (r *UserRepository) Update(user *models.User) error {
+	return r.db.Save(user).Error
+}
+
