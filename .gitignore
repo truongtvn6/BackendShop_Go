@@ -38,7 +38,7 @@ static/uploads/*
 # Cursor rules
 .cursor/rules
 .cursor/rules/*
-
+.cursor
 # Docker Compose config
 
 
