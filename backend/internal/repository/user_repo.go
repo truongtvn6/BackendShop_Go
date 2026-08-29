@@ -91,4 +91,3 @@ func (r *UserRepository) Create(user *models.User) error {
 func (r *UserRepository) Update(user *models.User) error {
 	return r.db.Save(user).Error
 }
-
