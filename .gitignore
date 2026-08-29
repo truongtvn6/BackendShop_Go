@@ -40,3 +40,4 @@ static/uploads/*
 .cursor/rules/*
 .cursor
 # Docker Compose config
+.agents

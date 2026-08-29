@@ -435,7 +435,9 @@ func (h *ProductHandler) UploadProductImage(c *gin.Context) {
 	}
 	product.ImageURL = "/" + uploadPath // Sử dụng uploadPath đã join
 	if err := h.repo.Update(product); err != nil {
-		os.Remove(uploadPath)
+		if removeErr := os.Remove(uploadPath); removeErr != nil {
+			fmt.Printf("failed to remove uploaded file %s: %v\n", uploadPath, removeErr)
+		}
 		c.JSON(http.StatusInternalServerError, utils.NewErrorResponse(http.StatusInternalServerError, "Error updating product image URL", err.Error()))
 		return
 	}
