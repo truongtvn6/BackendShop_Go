@@ -1,4 +1,4 @@
-# Project Backend
+# Project BackendShop_Go
 
 A RESTful API backend built with Go, Gin, and PostgreSQL, fully containerized with Docker for easy setup and deployment.
 
@@ -28,7 +28,7 @@ This is the recommended way to run the project for development and production.
 1.  **Clone the repository:**
     ```sh
     git clone <repo-url>
-    cd Project_backend_Go
+    cd BackendShop_Go
     ```
 
 2.  **Start the services:**
@@ -139,7 +139,7 @@ If you prefer to run the Go application directly on your host machine:
     ```sh
     # Clone the repo
     git clone <repo-url>
-    cd Project_backend_Go
+    cd BackendShop_Go
 
     # Create and configure your .env file
     cp .env.example .env
